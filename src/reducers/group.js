@@ -12,9 +12,19 @@ const updateAddMemberName = (state, payload) => {
   }});
 }
 
+const isDuplicatedNameGlobally = (state, groupIdx) => {
+  const nameToCheck = state[groupIdx].addMemberName;
+  return state.some((group) => {
+    console.log(group);
+    return group.members.some((member) => {
+      return nameToCheck === member.name;});
+  });
+}
+
 const addMemberToGroup = (state, payload) => {
-  console.log(payload);
-  console.log(state);
+  if (isDuplicatedNameGlobally(state, payload.groupIdx)) {
+    return state;
+  }
   return state.map((group, index) => {
     if (index !== payload.groupIdx) {
       return group;
