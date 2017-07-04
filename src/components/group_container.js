@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 
+import AppBar from 'material-ui/AppBar';
+import AvLibraryAdd from 'material-ui/svg-icons/av/library-add';
+import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 import Group from './group';
 import * as GroupActions from '../actions/group_actions';
 
@@ -34,9 +39,13 @@ class GroupContainer extends Component {
       });
     return (
         <div>
-          <button onClick={(e) => {this.props.groupActions.addGroup();}}>
-            Add a Group
-          </button>
+          <AppBar
+            title={"Add A Group"}
+            iconElementLeft={<IconButton><AvLibraryAdd /></IconButton>}
+            iconElementRight={<FlatButton label="Save (Not Implememnted)" />}
+            onLeftIconButtonTouchTap={(e) => {this.props.groupActions.addGroup();}}
+           >
+          </AppBar>
           {groups}
         </div>);
   }

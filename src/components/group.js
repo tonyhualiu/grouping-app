@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
+import Chip from 'material-ui/Chip';
+import Paper from 'material-ui/Paper';
+
 import Member from './member';
 
 class Group extends Component {
@@ -20,17 +24,16 @@ class Group extends Component {
     const members = this.props.members.map((member, idx) => {
       return (
           <li key={idx}>
-            <Member name={member.name}/>
-            <button onClick={(e) => {this.handleRemoveMemberClick(e, member);}}>
-              Remove
-            </button>
+            <Chip onRequestDelete={(e) => {this.handleRemoveMemberClick(e, member);}}>
+              <Member name={member.name}/>
+            </Chip>
           </li>
           );
     });
     const groupName =
       this.props.idx === 0 ? 'Unassigned Group' : `Group ${this.props.idx}`;
     return (
-        <div>
+        <Paper zDepth={4}>
           <h2>{`${groupName}:`}</h2>
           <input type="text" name="add-member" value={this.props.addMemberName}
             onChange={(e) => {this.handleUpdateAddMemberName(e)}}/>
@@ -40,7 +43,7 @@ class Group extends Component {
           <ul>
             {members}
           </ul>
-        </div>);
+        </Paper>);
   }
 }
 
