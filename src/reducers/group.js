@@ -41,7 +41,6 @@ const addMemberToGroup = (state, payload) => {
 }
 
 const removeMemberFromGroup = (state, payload) => {
-  console.log(state, payload);
   return state.map((group, index) => {
     if (index !== payload.groupIdx) {
       return group;
@@ -52,7 +51,22 @@ const removeMemberFromGroup = (state, payload) => {
         return member.name !== payload.member.name});
       return updatedGroup;
   }});
+}
 
+const removeGroup = (state, payload) => {
+  console.log(state);
+  console.log(payload);
+  if (payload.groupIdx === 0) {
+    return state;
+  }
+  const unassignedMembers = state[payload.groupIdx].members.map((member, idx) =>
+      {
+        return {name: member.name, groupIdx: 0}
+      });
+  let newState = [...state.slice(0, payload.groupIdx),
+    ...state.slice(payload.groupIdx + 1)]
+  newState[0].members = [...newState[0].members, ...unassignedMembers];
+  return newState;
 }
 
 export default(state = DEFAULT_STATE, payload) => {
@@ -63,12 +77,11 @@ export default(state = DEFAULT_STATE, payload) => {
       return addMemberToGroup(state, payload);
     case 'removeMemberFromGroup':
       return removeMemberFromGroup(state, payload);
-    //case 'removeGroup':
-    //  return state;
+    case 'removeGroup':
+      return removeGroup(state,payload);
     case 'updateAddMemberName':
       return updateAddMemberName(state, payload);
     default:
       return state;
   }
 };
-

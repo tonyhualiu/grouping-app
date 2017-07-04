@@ -8,10 +8,19 @@ import * as GroupActions from '../actions/group_actions';
 class GroupContainer extends Component {
 
   render() {
+    const renderRemoveGroupButton = (idx) => {
+      return idx === 0 ? '' : (
+          <button onClick={(e) => this.props.groupActions.removeGroup(idx)}>
+            Remove Group
+          </button>);
+    };
     const groups = this.props.groups.map((group, idx) => {
       return (
           <div key={idx}>
-            <Group idx={idx} members={group.members}
+            {renderRemoveGroupButton(idx)}
+            <Group
+              idx={idx}
+              members={group.members}
               addMemberName={group.addMemberName}
               handleUpdateAddMemberName={(name, groupIdx) =>
                 {this.props.groupActions.updateAddMemberName(name, groupIdx)}}
