@@ -10,17 +10,26 @@ class GroupContainer extends Component {
   render() {
     const groups = this.props.groups.map((group, idx) => {
       return (
-          <li key={idx}>
+          <div key={idx}>
             <Group idx={idx} members={group.members}
               addMemberName={group.addMemberName}
               handleUpdateAddMemberName={(name, groupIdx) =>
                 {this.props.groupActions.updateAddMemberName(name, groupIdx)}}
               handleAddMemberClick={(groupIdx) =>
-                {this.props.groupActions.addMemberToGroup(groupIdx)}}/>
-          </li>
+                {this.props.groupActions.addMemberToGroup(groupIdx)}}
+              handleRemoveMemberClick={(groupIdx, member) =>
+                {this.props.groupActions.removeMemberFromGroup(groupIdx, member)}}
+            />
+          </div>
           );
       });
-    return (<div>{groups}</div>);
+    return (
+        <div>
+          <button onClick={(e) => {this.props.groupActions.addGroup();}}>
+            Add a Group
+          </button>
+          {groups}
+        </div>);
   }
 }
 
@@ -35,6 +44,5 @@ function mapDispaptchToProps(dispatch) {
     groupActions: bindActionCreators(GroupActions, dispatch),
   };
 }
-
 
 export default connect(mapStateToProps, mapDispaptchToProps)(GroupContainer);

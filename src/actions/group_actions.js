@@ -11,7 +11,7 @@ export const addMemberToGroup = (groupIdx) => {
   };
 }
 
-export const removeMemberFromGroup = (member, groupIdx) => {
+export const removeMemberFromGroup = (groupIdx, member) => {
   return {
     type: 'removeMemberFromGroup',
     member,

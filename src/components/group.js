@@ -12,9 +12,21 @@ class Group extends Component {
     this.props.handleAddMemberClick(this.props.idx);
   }
 
+  handleRemoveMemberClick(e, member) {
+    this.props.handleRemoveMemberClick(this.props.idx, member);
+  }
+
   render() {
     const members = this.props.members.map((member, idx) => {
-      return (<li key={idx}><Member name={member.name}/></li>);});
+      return (
+          <li key={idx}>
+            <Member name={member.name}/>
+            <button onClick={(e) => {this.handleRemoveMemberClick(e, member);}}>
+              Remove
+            </button>
+          </li>
+          );
+    });
     const groupName =
       this.props.idx === 0 ? 'Unassigned Group' : `Group ${this.props.idx}`;
     return (
@@ -40,6 +52,7 @@ Group.propTypes = {
   addMemberName: PropTypes.string,
   handleUpdateAddMemberName: PropTypes.func,
   handleAddMemberClick: PropTypes.func,
+  handleRemoveMemberClick: PropTypes.func,
 };
 
 Group.defaultProps = {

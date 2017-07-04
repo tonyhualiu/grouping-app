@@ -15,7 +15,6 @@ const updateAddMemberName = (state, payload) => {
 const isDuplicatedNameGlobally = (state, groupIdx) => {
   const nameToCheck = state[groupIdx].addMemberName;
   return state.some((group) => {
-    console.log(group);
     return group.members.some((member) => {
       return nameToCheck === member.name;});
   });
@@ -41,14 +40,29 @@ const addMemberToGroup = (state, payload) => {
   }});
 }
 
+const removeMemberFromGroup = (state, payload) => {
+  console.log(state, payload);
+  return state.map((group, index) => {
+    if (index !== payload.groupIdx) {
+      return group;
+    }
+    else {
+      let updatedGroup = {...group};
+      updatedGroup.members = group.members.filter((member) => {
+        return member.name !== payload.member.name});
+      return updatedGroup;
+  }});
+
+}
+
 export default(state = DEFAULT_STATE, payload) => {
   switch(payload.type) {
-    //case 'addGroup':
-    //  return [...state, payload.group];
+    case 'addGroup':
+      return [...state, {members: []}];
     case 'addMemberToGroup':
       return addMemberToGroup(state, payload);
-    //case 'removeMemberFromGroup':
-    //  return state;
+    case 'removeMemberFromGroup':
+      return removeMemberFromGroup(state, payload);
     //case 'removeGroup':
     //  return state;
     case 'updateAddMemberName':
