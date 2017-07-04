@@ -54,18 +54,18 @@ const removeMemberFromGroup = (state, payload) => {
 }
 
 const removeGroup = (state, payload) => {
-  console.log(state);
-  console.log(payload);
   if (payload.groupIdx === 0) {
     return state;
   }
-  const unassignedMembers = state[payload.groupIdx].members.map((member, idx) =>
-      {
-        return {name: member.name, groupIdx: 0}
-      });
+  const unassignedMembers = [...state[payload.groupIdx].members];
   let newState = [...state.slice(0, payload.groupIdx),
     ...state.slice(payload.groupIdx + 1)]
   newState[0].members = [...newState[0].members, ...unassignedMembers];
+  newState.forEach((group, groupIdx) => {
+    group.members.forEach((member, memberIdx) => {
+      member.groupIdx = groupIdx;
+    })
+  });
   return newState;
 }
 
