@@ -37,7 +37,7 @@ class GroupContainer extends Component {
           <AppBar
             title={"Add A Group"}
             iconElementLeft={<IconButton><AvLibraryAdd /></IconButton>}
-            iconElementRight={<FlatButton label="Save (Not Implememnted)" />}
+            iconElementRight={<FlatButton label="Save (TODO)" />}
             onLeftIconButtonTouchTap={(e) => {this.props.groupActions.addGroup();}}
            >
           </AppBar>
