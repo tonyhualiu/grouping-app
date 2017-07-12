@@ -46,6 +46,7 @@ class Group extends Component {
     });
     const groupName =
       this.props.idx === 0 ? 'Unassigned Group' : `Group ${this.props.idx}`;
+    const memberCount = this.props.members.length;
     const addMemberButton =
       (<IconButton
           className={"group__add-member-button"}
@@ -56,7 +57,8 @@ class Group extends Component {
     return (
         <Card zDepth={5}>
           <CardHeader
-            title={`${groupName}:`} />
+            title={`${groupName}`}
+            subtitle={`${memberCount} people`}/>
           {members}
           <CardActions>
             <ListItem
