@@ -1,6 +1,9 @@
 {
   "name": "grouping-app-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "engines": {
+    "node": "6.11.1"
+  },
   "private": true,
   "dependencies": {
     "babel-core": "6.14.0",
