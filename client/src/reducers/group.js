@@ -4,6 +4,7 @@ const DEFAULT_STATE = {
   groups: [{members: [], addMemberName: ''}],
   isFetchingGroups: false,
   isSavingGroups: false,
+  isGroupsMutated: false,
 };
 
 const updateAddMemberName = (state, payload) => {
@@ -44,7 +45,7 @@ const addMemberToGroup = (state, payload) => {
       updatedGroup.addMemberName = '';
       return updatedGroup;
   }});
-  return {...state, groups: newGroups};
+  return {...state, groups: newGroups, isGroupsMutated: true};
 }
 
 const removeMemberFromGroup = (state, payload) => {
@@ -58,7 +59,7 @@ const removeMemberFromGroup = (state, payload) => {
         return member.name !== payload.member.name});
       return updatedGroup;
   }});
-  return {...state, groups: newGroups};
+  return {...state, groups: newGroups, isGroupsMutated: true};
 }
 
 const removeGroup = (state, payload) => {
@@ -74,7 +75,7 @@ const removeGroup = (state, payload) => {
       member.groupIdx = groupIdx;
     })
   });
-  return {...state, groups: newGroups};
+  return {...state, groups: newGroups, isGroupsMutated: true};
 }
 
 const startFetchGroups = (state, payload) => {
@@ -90,7 +91,7 @@ const startSaveGroups = (state, payload) => {
 }
 
 const successSaveGroups = (state, payload) => {
-  return { ...state, isSavingGroups: false };
+  return { ...state, isSavingGroups: false, isGroupsMutated: false };
 }
 
 export default(state = DEFAULT_STATE, payload) => {

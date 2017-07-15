@@ -36,12 +36,16 @@ class GroupContainer extends Component {
           </div>
           );
       });
-    const isSaveButtonDisabled = this.props.isSavingGroups ? true : false;
-    const saveButtonText = this.props.isSavingGroups ? 'Saving' : 'Save';
+    let isSaveButtonDisabled = this.props.needSaveGroup ? false : true;
+    let saveButtonText = this.props.needSaveGroup ? 'Click to Save' : 'All Saved';
+    if (this.props.isSavingGroups) {
+      isSaveButtonDisabled = true;
+      saveButtonText = 'Saving';
+    }
     return (
         <div>
           <AppBar
-            title={"Add A Group"}
+            title={"Add Group"}
             iconElementLeft={<IconButton><AvLibraryAdd /></IconButton>}
             iconElementRight={<FlatButton
                                 label={ saveButtonText }
@@ -60,6 +64,7 @@ function mapStateToProps(state, prop) {
   return {
     groups: state.group.groups,
     isSavingGroups: state.group.isSavingGroups,
+    needSaveGroup: state.group.isGroupsMutated,
   }
 }
 
