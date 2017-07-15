@@ -12,6 +12,10 @@ import * as GroupActions from '../actions/group_actions';
 
 class GroupContainer extends Component {
 
+  componentDidMount() {
+    this.props.groupActions.fetchGroups();
+  }
+
   render() {
     const groups = this.props.groups.map((group, idx) => {
       return (
@@ -32,13 +36,19 @@ class GroupContainer extends Component {
           </div>
           );
       });
+    const isSaveButtonDisabled = this.props.isSavingGroups ? true : false;
+    const saveButtonText = this.props.isSavingGroups ? 'Saving' : 'Save';
     return (
         <div>
           <AppBar
             title={"Add A Group"}
             iconElementLeft={<IconButton><AvLibraryAdd /></IconButton>}
-            iconElementRight={<FlatButton label="Save (TODO)" />}
+            iconElementRight={<FlatButton
+                                label={ saveButtonText }
+                                disabled={ isSaveButtonDisabled }/>}
             onLeftIconButtonTouchTap={(e) => {this.props.groupActions.addGroup();}}
+            onRightIconButtonTouchTap={(e) =>
+              {this.props.groupActions.saveGroups(this.props.groups);}}
            >
           </AppBar>
           {groups}
@@ -48,14 +58,15 @@ class GroupContainer extends Component {
 
 function mapStateToProps(state, prop) {
   return {
-    groups: state.group,
+    groups: state.group.groups,
+    isSavingGroups: state.group.isSavingGroups,
   }
 }
 
-function mapDispaptchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     groupActions: bindActionCreators(GroupActions, dispatch),
   };
 }
 
-export default connect(mapStateToProps, mapDispaptchToProps)(GroupContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupContainer);

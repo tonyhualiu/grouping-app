@@ -1,30 +1,36 @@
-const DEFAULT_STATE = [{members: [], addMemberName: ''}];
+import 'whatwg-fetch';
+
+const DEFAULT_STATE = {
+  groups: [{members: [], addMemberName: ''}],
+  isFetchingGroups: false,
+  isSavingGroups: false,
+};
 
 const updateAddMemberName = (state, payload) => {
-  return state.map((group, index) => {
+  const newGroups = state.groups.map((group, index) => {
     if (index !== payload.groupIdx) {
       return group;
     }
     else {
-      let updatedGroup = {...group};
-      updatedGroup.addMemberName = payload.name;
-      return updatedGroup;
+      return {...group, addMemberName: payload.name};
   }});
+  return {...state, groups: newGroups};
+
 }
 
-const isDuplicatedNameGlobally = (state, groupIdx) => {
-  const nameToCheck = state[groupIdx].addMemberName;
-  return state.some((group) => {
+const isDuplicatedNameGlobally = (groups, groupIdx) => {
+  const nameToCheck = groups[groupIdx].addMemberName;
+  return groups.some((group) => {
     return group.members.some((member) => {
       return nameToCheck === member.name;});
   });
 }
 
 const addMemberToGroup = (state, payload) => {
-  if (isDuplicatedNameGlobally(state, payload.groupIdx)) {
+  if (isDuplicatedNameGlobally(state.groups, payload.groupIdx)) {
     return state;
   }
-  return state.map((group, index) => {
+  const newGroups = state.groups.map((group, index) => {
     if (index !== payload.groupIdx) {
       return group;
     }
@@ -38,10 +44,11 @@ const addMemberToGroup = (state, payload) => {
       updatedGroup.addMemberName = '';
       return updatedGroup;
   }});
+  return {...state, groups: newGroups};
 }
 
 const removeMemberFromGroup = (state, payload) => {
-  return state.map((group, index) => {
+  const newGroups = state.groups.map((group, index) => {
     if (index !== payload.groupIdx) {
       return group;
     }
@@ -51,28 +58,45 @@ const removeMemberFromGroup = (state, payload) => {
         return member.name !== payload.member.name});
       return updatedGroup;
   }});
+  return {...state, groups: newGroups};
 }
 
 const removeGroup = (state, payload) => {
   if (payload.groupIdx === 0) {
     return state;
   }
-  const unassignedMembers = [...state[payload.groupIdx].members];
-  let newState = [...state.slice(0, payload.groupIdx),
-    ...state.slice(payload.groupIdx + 1)]
-  newState[0].members = [...newState[0].members, ...unassignedMembers];
-  newState.forEach((group, groupIdx) => {
+  const unassignedMembers = [...state.groups[payload.groupIdx].members];
+  let newGroups = [...state.groups.slice(0, payload.groupIdx),
+    ...state.groups.slice(payload.groupIdx + 1)]
+  newGroups[0].members = [...newGroups[0].members, ...unassignedMembers];
+  newGroups.forEach((group, groupIdx) => {
     group.members.forEach((member, memberIdx) => {
       member.groupIdx = groupIdx;
     })
   });
-  return newState;
+  return {...state, groups: newGroups};
+}
+
+const startFetchGroups = (state, payload) => {
+  return { ...state, isFetchingGroups: true };
+}
+
+const successFetchGroups = (state, payload) => {
+  return { ...state, groups: payload.groups, isFetchingGroups: false };
+}
+
+const startSaveGroups = (state, payload) => {
+  return { ...state, isSavingGroups: true };
+}
+
+const successSaveGroups = (state, payload) => {
+  return { ...state, isSavingGroups: false };
 }
 
 export default(state = DEFAULT_STATE, payload) => {
   switch(payload.type) {
     case 'addGroup':
-      return [...state, {members: []}];
+      return {...state, groups: [...state.groups, {members: [], addMemberName: ''}]};
     case 'addMemberToGroup':
       return addMemberToGroup(state, payload);
     case 'removeMemberFromGroup':
@@ -81,6 +105,14 @@ export default(state = DEFAULT_STATE, payload) => {
       return removeGroup(state,payload);
     case 'updateAddMemberName':
       return updateAddMemberName(state, payload);
+    case 'startFetchGroups':
+      return startFetchGroups(state, payload);
+    case 'successFetchGroups':
+      return successFetchGroups(state, payload);
+    case 'startSaveGroups':
+      return startSaveGroups(state, payload);
+    case 'successSaveGroups':
+      return successSaveGroups(state, payload);
     default:
       return state;
   }
