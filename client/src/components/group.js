@@ -10,6 +10,7 @@ import TextField from 'material-ui/TextField';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 import Member from './member';
+import './group.css';
 
 class Group extends Component {
 
@@ -54,11 +55,13 @@ class Group extends Component {
         <PersonAdd />
       </IconButton>);
     return (
-        <Card zDepth={5}>
+        <Card zDepth={5} className="group">
           <CardHeader
             title={`${groupName}`}
             subtitle={`${memberCount} people`}/>
-          {members}
+          <div className="group__member-container">
+            {members}
+          </div>
           <CardActions>
             <ListItem
                 rightIconButton={addMemberButton}>
