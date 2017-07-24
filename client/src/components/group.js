@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import ContentClear from 'material-ui/svg-icons/content/clear';
-import Chip from 'material-ui/Chip';
 import IconButton from 'material-ui/IconButton';
 import { Card, CardHeader, CardActions } from 'material-ui/Card';
 import { ListItem } from 'material-ui/List';
@@ -37,11 +36,11 @@ class Group extends Component {
   render() {
     const members = this.props.members.map((member, idx) => {
       return (
-            <Chip
+            <Member
                 key={idx}
-                onRequestDelete={(e) => {this.handleRemoveMemberClick(e, member);}}>
-              <Member name={member.name}/>
-            </Chip>
+                name={member.name}
+                onRemoveMemberClick={(e) => {this.handleRemoveMemberClick(e,
+                    member);}} />
           );
     });
     const groupName =
