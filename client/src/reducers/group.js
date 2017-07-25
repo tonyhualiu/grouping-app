@@ -19,16 +19,15 @@ const updateAddMemberName = (state, payload) => {
 
 }
 
-const isDuplicatedNameGlobally = (groups, groupIdx) => {
-  const nameToCheck = groups[groupIdx].addMemberName;
+const isDuplicatedNameGlobally = (groups, groupIdx, name) => {
   return groups.some((group) => {
     return group.members.some((member) => {
-      return nameToCheck === member.name;});
+      return name === member.name;});
   });
 }
 
 const addMemberToGroup = (state, payload) => {
-  if (isDuplicatedNameGlobally(state.groups, payload.groupIdx)) {
+  if (isDuplicatedNameGlobally(state.groups, payload.groupIdx, payload.name)) {
     return state;
   }
   const newGroups = state.groups.map((group, index) => {
@@ -36,12 +35,12 @@ const addMemberToGroup = (state, payload) => {
       return group;
     }
     else {
-      if (group.addMemberName === '') { // do not add empty name as member
+      if (payload.name === '') { // do not add empty name as member
         return group
       }
       let updatedGroup = {...group};
       updatedGroup.members = [...group.members, {name:
-        group.addMemberName, groupIdx: index}];
+        payload.name, groupIdx: index}];
       updatedGroup.addMemberName = '';
       return updatedGroup;
   }});

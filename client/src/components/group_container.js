@@ -26,12 +26,14 @@ class GroupContainer extends Component {
               addMemberName={group.addMemberName}
               handleUpdateAddMemberName={(name, groupIdx) =>
                 {this.props.groupActions.updateAddMemberName(name, groupIdx)}}
-              handleAddMemberClick={(groupIdx) =>
-                {this.props.groupActions.addMemberToGroup(groupIdx)}}
+              handleAddMemberClick={(groupIdx, name) =>
+                {this.props.groupActions.addMemberToGroup(groupIdx, name)}}
               handleRemoveMemberClick={(groupIdx, member) =>
                 {this.props.groupActions.removeMemberFromGroup(groupIdx, member)}}
               handleRemoveGroupClick={(groupIdx) =>
                 {this.props.groupActions.removeGroup(groupIdx)}}
+              handleMoveMember={(name, fromIdx, toIdx) =>
+                this.props.groupActions.moveMember(name, fromIdx, toIdx)}
             />
           </div>
           );

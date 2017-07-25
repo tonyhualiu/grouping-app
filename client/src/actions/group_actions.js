@@ -4,10 +4,11 @@ export const addGroup = () => {
   };
 }
 
-export const addMemberToGroup = (groupIdx) => {
+export const addMemberToGroup = (groupIdx, name) => {
   return {
     type: 'addMemberToGroup',
     groupIdx,
+    name,
   };
 }
 
@@ -81,4 +82,12 @@ export const saveGroups = (groups) => (dispatch, getState) => {
     .then(responseStauts => {
       dispatch(successSaveGroups())
     });
+}
+
+export const moveMember = (name, fromIdx, toIdx) => (dispatch, getState) => {
+  dispatch(removeMemberFromGroup(fromIdx, {name: name, groupIdx: fromIdx}));
+  dispatch(addMemberToGroup(toIdx, name));
+  return {
+    type: 'moveMember',
+  };
 }

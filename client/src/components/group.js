@@ -8,9 +8,26 @@ import { ListItem } from 'material-ui/List';
 import PersonAdd from 'material-ui/svg-icons/social/person-add';
 import TextField from 'material-ui/TextField';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import { DropTarget } from 'react-dnd';
 
 import Member from './member';
 import './group.css';
+
+const groupTarget = {
+  canDrop(props, monitor) {return true;},
+
+  drop(props, monitor, component) {
+    const member = monitor.getItem();
+    props.handleMoveMember(member.name, member.groupIdx, props.idx);
+    return {moved: true};
+  },
+};
+
+const collect = (connect, monitor) => {
+  return {
+    connectDropTarget: connect.dropTarget(),
+  }
+}
 
 class Group extends Component {
 
@@ -19,7 +36,7 @@ class Group extends Component {
   }
 
   handleAddMemberClick(e) {
-    this.props.handleAddMemberClick(this.props.idx);
+    this.props.handleAddMemberClick(this.props.idx, this.props.addMemberName);
   }
 
   handleRemoveMemberClick(e, member) {
@@ -39,6 +56,7 @@ class Group extends Component {
       return (
             <Member
                 key={idx}
+                groupIdx={member.groupIdx}
                 name={member.name}
                 onRemoveMemberClick={(e) => {this.handleRemoveMemberClick(e,
                     member);}} />
@@ -54,25 +72,27 @@ class Group extends Component {
           onTouchTap={(e) => {this.handleAddMemberClick(e)}}>
         <PersonAdd />
       </IconButton>);
-    return (
-        <Card zDepth={5} className="group">
-          <CardHeader
-            title={`${groupName}`}
-            subtitle={`${memberCount} people`}/>
-          <div className="group__member-container">
-            {members}
-          </div>
-          <CardActions>
-            <ListItem
-                rightIconButton={addMemberButton}>
-              <TextField
-                hintText="Type in member name"
-                value={this.props.addMemberName}
-                onChange={(e) => {this.handleUpdateAddMemberName(e)}} />
-            </ListItem>
-            {this.renderRemoveGroupButton()}
-          </CardActions>
-        </Card>);
+    return this.props.connectDropTarget(
+        <div>
+          <Card zDepth={5} className="group">
+            <CardHeader
+              title={`${groupName}`}
+              subtitle={`${memberCount} people`}/>
+            <div className="group__member-container">
+              {members}
+            </div>
+            <CardActions>
+              <ListItem
+                  rightIconButton={addMemberButton}>
+                <TextField
+                  hintText="Type in member name"
+                  value={this.props.addMemberName}
+                  onChange={(e) => {this.handleUpdateAddMemberName(e)}} />
+              </ListItem>
+              {this.renderRemoveGroupButton()}
+            </CardActions>
+          </Card>
+        </div>);
   }
 }
 
@@ -86,10 +106,11 @@ Group.propTypes = {
   handleAddMemberClick: PropTypes.func,
   handleRemoveMemberClick: PropTypes.func,
   handleRemoveGroupClick: PropTypes.func,
+  handleMoveMember: PropTypes.func,
 };
 
 Group.defaultProps = {
   addMemberName: '',
 }
 
-export default Group;
+export default DropTarget('member', groupTarget, collect)(Group);
