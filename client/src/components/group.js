@@ -8,26 +8,9 @@ import { ListItem } from 'material-ui/List';
 import PersonAdd from 'material-ui/svg-icons/social/person-add';
 import TextField from 'material-ui/TextField';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import { DropTarget } from 'react-dnd';
 
 import Member from './member';
 import './group.css';
-
-const groupTarget = {
-  canDrop(props, monitor) {return true;},
-
-  drop(props, monitor, component) {
-    const member = monitor.getItem();
-    props.handleMoveMember(member.name, member.groupIdx, props.idx);
-    return {moved: true};
-  },
-};
-
-const collect = (connect, monitor) => {
-  return {
-    connectDropTarget: connect.dropTarget(),
-  }
-}
 
 class Group extends Component {
 
@@ -51,17 +34,34 @@ class Group extends Component {
       </FloatingActionButton>);
   };
 
-  render() {
-    const members = this.props.members.map((member, idx) => {
+  handleGroupPickingOpen(e, groupIdx, member) {
+    this.props.handleGroupPickingOpen(groupIdx, member);
+  }
+
+  renderMembers() {
+    return this.props.members.map((member, idx) => {
       return (
             <Member
                 key={idx}
                 groupIdx={member.groupIdx}
                 name={member.name}
+                allGroupIdx={this.props.allGroupIdx}
                 onRemoveMemberClick={(e) => {this.handleRemoveMemberClick(e,
-                    member);}} />
+                    member);}}
+                isGroupPickingOpen={!!member.isGroupPicking}
+                onMemberPopOverOpen={(e) =>
+                  {this.handleGroupPickingOpen(e, member.groupIdx, member)}}
+                onMemberPopOverClose={(e) =>
+                  {this.props.handleGroupPickingClose()}}
+                onMoveMember={(name, fromGroupIdx, toGroupIdx) =>
+                  {this.props.handleMoveMember(name, fromGroupIdx, toGroupIdx)}}
+                />
           );
     });
+
+  }
+
+  render() {
     const groupName =
       this.props.idx === 0 ? 'Unassigned Group' : `Group ${this.props.idx}`;
     const memberCount = this.props.members.length;
@@ -72,14 +72,14 @@ class Group extends Component {
           onTouchTap={(e) => {this.handleAddMemberClick(e)}}>
         <PersonAdd />
       </IconButton>);
-    return this.props.connectDropTarget(
+    return (
         <div>
           <Card zDepth={5} className="group">
             <CardHeader
               title={`${groupName}`}
               subtitle={`${memberCount} people`}/>
             <div className="group__member-container">
-              {members}
+              {this.renderMembers()}
             </div>
             <CardActions>
               <ListItem
@@ -106,6 +106,8 @@ Group.propTypes = {
   handleAddMemberClick: PropTypes.func,
   handleRemoveMemberClick: PropTypes.func,
   handleRemoveGroupClick: PropTypes.func,
+  handleGroupPickingOpen: PropTypes.func,
+  handleGroupPickingClose: PropTypes.func,
   handleMoveMember: PropTypes.func,
 };
 
@@ -113,4 +115,4 @@ Group.defaultProps = {
   addMemberName: '',
 }
 
-export default DropTarget('member', groupTarget, collect)(Group);
+export default Group;

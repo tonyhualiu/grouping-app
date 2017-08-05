@@ -91,3 +91,17 @@ export const moveMember = (name, fromIdx, toIdx) => (dispatch, getState) => {
     type: 'moveMember',
   };
 }
+
+export const groupPickingOpen = (groupIdx, member) => {
+  return {
+    type: 'groupPickingOpen',
+    groupIdx,
+    member,
+  };
+}
+
+export const groupPickingClose = () => {
+  return {
+    type: 'groupPickingClose',
+  };
+}

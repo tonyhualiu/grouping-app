@@ -93,6 +93,32 @@ const successSaveGroups = (state, payload) => {
   return { ...state, isSavingGroups: false, isGroupsMutated: false };
 }
 
+const groupPickingOpen = (state, payload) => {
+  const newGroups = state.groups.map((group, idx) => {
+    if (idx === payload.groupIdx) {
+      const newMembers = group.members.map((member, idx) => {
+        if(member.name === payload.member.name) {
+          return {...member, isGroupPicking: true}
+        }
+        return {...member, isGroupPicking: false};
+      })
+      return {...group, members: newMembers};
+    }
+    return group;
+  })
+  return {...state, groups: newGroups};
+}
+
+const groupPickingClose = (state, payload) => {
+  const newGroups = state.groups.map((group, idx) => {
+      const newMembers = group.members.map((member, idx) => {
+        return {...member, isGroupPicking: false};
+      });
+      return {...group, members: newMembers};
+    });
+  return {...state, groups: newGroups};
+}
+
 export default(state = DEFAULT_STATE, payload) => {
   switch(payload.type) {
     case 'addGroup':
@@ -113,6 +139,10 @@ export default(state = DEFAULT_STATE, payload) => {
       return startSaveGroups(state, payload);
     case 'successSaveGroups':
       return successSaveGroups(state, payload);
+    case 'groupPickingOpen':
+      return groupPickingOpen(state, payload);
+    case 'groupPickingClose':
+      return groupPickingClose(state, payload);
     default:
       return state;
   }

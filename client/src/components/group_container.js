@@ -17,6 +17,9 @@ class GroupContainer extends Component {
   }
 
   render() {
+    const allGroupIdx = this.props.groups.map((group, idx) => {
+      return idx;
+    });
     const groups = this.props.groups.map((group, idx) => {
       return (
           <div key={idx}>
@@ -24,6 +27,7 @@ class GroupContainer extends Component {
               idx={idx}
               members={group.members}
               addMemberName={group.addMemberName}
+              allGroupIdx={allGroupIdx}
               handleUpdateAddMemberName={(name, groupIdx) =>
                 {this.props.groupActions.updateAddMemberName(name, groupIdx)}}
               handleAddMemberClick={(groupIdx, name) =>
@@ -34,6 +38,10 @@ class GroupContainer extends Component {
                 {this.props.groupActions.removeGroup(groupIdx)}}
               handleMoveMember={(name, fromIdx, toIdx) =>
                 this.props.groupActions.moveMember(name, fromIdx, toIdx)}
+              handleGroupPickingOpen={(groupIdx, member) =>
+                {this.props.groupActions.groupPickingOpen(groupIdx, member)}}
+              handleGroupPickingClose={() =>
+                {this.props.groupActions.groupPickingClose()}}
             />
           </div>
           );
